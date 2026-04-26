@@ -136,5 +136,42 @@ const updatePost = async (req, res) => {
     }
 }
 
+const deletePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
 
-export { createPost, getAllPosts, getSinglePost, updatePost }
+        if(!post) {
+            return res.status(404).json({
+                message: 'No post found'
+            })
+        }
+
+        if(post.author.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: 'You cannot delete this post'
+            })
+        }
+
+        const deletedPost = await Post.findByIdAndDelete(req.params.id)
+
+        if(!deletedPost) {
+            return res.status(500).json({
+                message: 'Something went wrong while deleting post'
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Post deleted Successfully'
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server error while deleting post'
+        })
+    }
+}
+
+
+
+export { createPost, getAllPosts, getSinglePost, updatePost, deletePost }
