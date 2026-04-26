@@ -12,8 +12,8 @@ const methodToGenerateAccessToken = async (userId) => {
 }
 
 const options = {
-    httpOnly: false,
-    secure: true
+    httpOnly: true,
+    secure: false,
 }
 
 
@@ -113,4 +113,26 @@ const loginUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser };
+const logoutUser = async (req, res) => {
+    try {
+
+        if(!req.user) {
+            return res.status(401).json({
+                message: 'unAuthorized Req'
+            })
+        }
+
+        return res.status(200)
+        .clearCookie('accessToken')
+        .json({
+            message: 'User loggedOut successfully',
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while logging out User'
+        })
+    }
+}
+
+export { registerUser, loginUser, logoutUser };
