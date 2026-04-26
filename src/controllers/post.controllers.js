@@ -86,5 +86,55 @@ const getSinglePost = async (req, res) => {
     }
 }
 
+const updatePost = async (req, res) => {
+    try {
+        const key = Object.keys(req.body);
 
-export { createPost, getAllPosts, getSinglePost }
+        const allowedFields = ['title','content'];
+
+        const validFields = key.every((field) => allowedFields.includes(field))
+
+        if(!validFields) {
+            return res.status(401).json({
+                message: 'These fields cannot be updated'
+            })
+        }
+
+        const post = await Post.findById(req.params.id);
+
+        if (!post) {
+            return res.status(404).json({
+                message: 'Post not found'
+            });
+        }
+
+        if (post.author.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: 'You are not allowed to update this post'
+            });
+        }
+
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        ).populate('author','name')
+
+
+
+        return res.status(200).json({
+            message: 'post updated successfully',
+            data: updatedPost
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while updating post'
+        })
+    }
+}
+
+
+export { createPost, getAllPosts, getSinglePost, updatePost }
