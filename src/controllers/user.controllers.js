@@ -135,4 +135,24 @@ const logoutUser = async (req, res) => {
     }
 }
 
-export { registerUser, loginUser, logoutUser };
+const getUserData = async (req, res) => {
+    try {
+        if(!req.user) {
+            return res.status(401).json({
+                message: 'UnAuthorized Req'
+            })
+        }
+
+        return res.status(200).json({
+            message: 'LoggedIn User data fetched Successfully',
+            data: req.user
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while getting loggedIn User data'
+        })
+    }
+}
+
+export { registerUser, loginUser, logoutUser, getUserData };

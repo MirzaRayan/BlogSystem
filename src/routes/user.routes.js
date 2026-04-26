@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
+import { getUserData, loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
 import { verifyJWT } from "../middlewares/Auth.middleware.js";
 const router = Router();
 
@@ -10,6 +10,7 @@ router.route('/login').post(loginUser)
 // protected routes
 
 router.route('/logout').get(verifyJWT, logoutUser)
+router.route('/me').get(verifyJWT, getUserData)
 
 
 
