@@ -16,4 +16,10 @@ app.use('/api/user', UserRouter)
 
 
 
+import PostRouter from './src/routes/post.routes.js'
+
+app.use('/api/post', PostRouter)
+
+
+
 export default app
