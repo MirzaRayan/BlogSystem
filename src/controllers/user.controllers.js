@@ -204,7 +204,32 @@ const updateUser = async (req, res) => {
             message: 'Server Error while updating User data'
         });
     }
-};
+}
+
+const deleteUser = async (req, res) => {
+    try {        
+        const deletedUser = await User.findByIdAndDelete(req.user._id)    
+
+        if(!deletedUser) {
+            return res.status(404).json({
+                message: 'User not found'
+            })
+        }
+
+        return res.status(200)
+        .clearCookie('accessToken')
+        .json({
+            message: 'User deleted successfully',
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while deleting User',
+        })
+        
+    }
+}
 
 
-export { registerUser, loginUser, logoutUser, getUserData, updateUser };
+export { registerUser, loginUser, logoutUser, getUserData, updateUser, deleteUser };
