@@ -62,7 +62,29 @@ const getAllPosts = async (req, res) => {
     }
 }
 
+const getSinglePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id)
+        .populate('author','name')
+
+        if(!post) {
+            return res.status(404).json({
+                message: 'Post not found'
+            })
+        }
+
+        return res.status(200).json({
+            message: 'Post fetch successfully',
+            data: post
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while getting post'
+        })
+    }
+}
 
 
-
-export { createPost, getAllPosts }
+export { createPost, getAllPosts, getSinglePost }
