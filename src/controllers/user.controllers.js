@@ -1,4 +1,5 @@
 import { User } from "../models/User.models.js";
+import bcrypt from 'bcrypt'
 
 
 const methodToGenerateAccessToken = async (userId) => {
@@ -231,5 +232,62 @@ const deleteUser = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        const {oldPassword, newPassword} = req.body;
 
-export { registerUser, loginUser, logoutUser, getUserData, updateUser, deleteUser };
+        if(!oldPassword || !newPassword) {
+            return res.status(400).json({
+                message: 'All fields are required',
+            })
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+              message: "Password must be at least 6 characters"
+            });
+          }
+
+
+        if( oldPassword === newPassword ) {
+            return res.status(401).json({
+                message: 'New Password cannot be same as the previous one',
+            })
+        }
+
+        const user = await User.findById(req.user._id)
+
+        if(!user) {
+            return res.status(404).json({
+                message: 'User not found!'
+            })
+        }
+
+        const isMatched = await bcrypt.compare(oldPassword, user.password)
+
+        if(!isMatched) {
+            return res.status(401).json({
+                message: 'password does not match'
+            })
+        }
+
+        user.password = newPassword
+        
+        await user.save();
+
+        return res.status(200)
+        .clearCookie('accessToken')
+        .json({
+            message: 'Password changed successfully',
+        })
+
+
+    } catch (error) {
+        console.log('Server Error while changing password',error);
+        return res.status(500).json({
+            message: 'Server Error while changing password'
+        })
+    }
+}
+
+export { registerUser, loginUser, logoutUser, getUserData, updateUser, deleteUser, changePassword };
