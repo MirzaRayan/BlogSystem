@@ -46,15 +46,28 @@ This is a backend project for a blog system built using Node.js Express and Mong
 
 * POST /api/post/create
 * GET /api/post/all
-* GET /api/post/:id
-* PUT /api/post/:id
-* DELETE /api/post/:id
+* GET /api/post/getPost/:id
+* PUT /api/post/updatePost/:id
+* DELETE /api/post/deletePost/:id
 
 ### 👑 Admin Routes
 
-* GET /api/admin/users
-* DELETE /api/admin/user/:id
+Admin Routes for users
+
+* GET /api/admin/allUsers
+* GET /api/admin/getAllStats
+* DELETE /api/admin/deleteSingleUser/:id
+* GET /api/admin/getSingleUser/:id
 * PUT /api/admin/block/:id
+* PUT /api/admin/unblock/:id
+* PUT /api/admin/promoteToAdmin/:id
+
+Admin Routes for posts
+
+* GET /api/admin/allPosts
+* GET /api/admin/getSinglePost/:id
+* DELETE /api/admin/deleteSinglePost/:id
+
 
 ---
 

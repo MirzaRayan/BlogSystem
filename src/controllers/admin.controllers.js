@@ -306,4 +306,5 @@ const deleteSinglePost = async (req, res) => {
 
 
 
+
 export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts, getSinglePost, deleteSinglePost }

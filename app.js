@@ -24,7 +24,7 @@ app.use('/api/post', PostRouter)
 
 import AdminRouter from './src/routes/admin.routes.js'
 
-app.use('/api/user', AdminRouter)
+app.use('/api/admin', AdminRouter)
 
 
 
