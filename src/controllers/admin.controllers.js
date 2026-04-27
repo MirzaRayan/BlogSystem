@@ -1,6 +1,8 @@
 import { User } from "../models/User.models.js";
 
 
+
+
 const getAllUsers = async (req, res) => {
     try {
         const allUsers = await User.find().select('-password')
@@ -201,5 +203,38 @@ const promoteToAdmin = async (req, res) => {
     }
 }
 
+const getAllStats = async (req, res) => {
+    try {
 
-export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin }
+        const users = await User.countDocuments({
+            role: 'user'
+        })
+
+        const admins = await User.countDocuments({
+            role: 'admin'
+        })
+
+        const blockedUsers = await User.countDocuments({
+            isBlocked: true
+        })
+
+        return res.status(200).json({
+            message: 'Stats fetched successfully',
+            data: {
+                users: users,
+                admins: admins,
+                blockedUsers: blockedUsers,
+            }
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while getting all stats'
+        })
+    }
+}
+
+
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats }
