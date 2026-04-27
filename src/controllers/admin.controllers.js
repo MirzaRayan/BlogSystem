@@ -1,7 +1,7 @@
 import { User } from "../models/User.models.js";
+import { Post } from "../models/Post.models.js";
 
-
-
+// controller related to Users
 
 const getAllUsers = async (req, res) => {
     try {
@@ -235,6 +235,31 @@ const getAllStats = async (req, res) => {
     }
 }
 
+// controllers related to posts
+
+const getAllPosts = async (req, res) => {
+    try {
+
+        const allPosts =  await Post.find();
+
+        if(allPosts.length === 0) {
+            return res.status(404).json({
+                message: 'No post found',
+            })
+        }
+
+        return res.status(200).json({
+            message: 'All posts fetched successfully',
+            data: allPosts
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while getting all posts'
+        })
+    }
+}
 
 
-export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats }
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts }
