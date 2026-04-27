@@ -283,6 +283,27 @@ const getSinglePost = async (req, res) => {
     }
 }
 
+const deleteSinglePost = async (req, res) => {
+    try {
+       const deletedPost = await Post.findByIdAndDelete(req.params.id)
+
+       if(!deletedPost) {
+        return res.status(404).json({
+            message: 'Post not found',
+        })
+       }
+
+       return res.status(200).json({
+            message: 'Post deleted Successfully'
+       })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server error while deleting single post'
+        })
+    }
+}
 
 
-export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts, getSinglePost }
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts, getSinglePost, deleteSinglePost }
