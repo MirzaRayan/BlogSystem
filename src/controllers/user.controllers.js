@@ -85,6 +85,12 @@ const loginUser = async (req, res) => {
             })
         }
 
+        if (user.isBlocked) {
+            return res.status(403).json({
+              message: "User is blocked",
+            });
+        }
+
         const isPasswordCorrect = await user.isPasswordCorrect(password)
 
         if(!isPasswordCorrect) {
@@ -92,6 +98,8 @@ const loginUser = async (req, res) => {
                 message: 'Password is incorrect'
             })
         }
+
+       
 
         const accessToken = await methodToGenerateAccessToken(user._id)
 

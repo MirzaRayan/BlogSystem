@@ -81,4 +81,47 @@ const deleteSingleUser = async (req, res) => {
     }
 }
 
-export { getAllUsers, getSingleUser, deleteSingleUser }
+const blockUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password')
+
+
+        if(!user) {
+            return res.status(404).json({
+                message: 'User Not found'
+            })
+        }
+
+        if(user.role === "admin") {
+            return res.status(403).json({
+                message: 'You cannot block an admin',
+            })
+        }
+
+        if(user.isBlocked) {
+            return res.status(400).json({
+                message: 'User is already blocked'
+            })
+        }
+
+        user.isBlocked = true;
+
+        await user.save();
+
+        return res.status(200).json({
+            message: 'User is blocked Successfully',
+            data: user
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while blocking user'
+        })
+    }
+}
+
+
+
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser }

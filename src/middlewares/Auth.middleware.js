@@ -18,11 +18,19 @@ export const verifyJWT = async (req, res, next) => {
 
         const user = await User.findById(decodedToken._id).select('-password')
 
+
         if(!user) {
             return res.status(401).json({
                 message: 'Invalid Access Token'
             })
         }
+
+        if (user.isBlocked) {
+            return res.status(403).json({
+              message: "User is blocked",
+            });
+          }
+
 
         req.user = user;
 
@@ -31,7 +39,7 @@ export const verifyJWT = async (req, res, next) => {
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            message: '"Invalid or expired token"'
+            message: 'Server Error in Auth middleware'
         });
     }
 }
