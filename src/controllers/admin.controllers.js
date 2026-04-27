@@ -121,7 +121,85 @@ const blockUser = async (req, res) => {
     }
 }
 
+const unBlockUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password')
+
+        if(!user) {
+            return res.status(404).json({
+                message: 'User not found',
+            })
+        }
+
+        if (user.role === "admin") {
+            return res.status(403).json({
+              message: "You cannot modify admin status",
+            });
+          }
+
+        if(!user.isBlocked) {
+            return res.status(400).json({
+                message: 'User is already unblocked'
+            })
+        }
+
+        user.isBlocked = false;
+
+        await user.save();
+
+        return res.status(200).json({
+            message: 'User unblocked Successfully',
+            data: user
+        })
 
 
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while unblocking User'
+        })
+    }
+}
 
-export { getAllUsers, getSingleUser, deleteSingleUser, blockUser }
+const promoteToAdmin = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.params.id).select('-password')
+
+        if(!user) {
+            return res.status(404).json({
+                message: 'User not found'
+            })
+        }
+
+        if(user.role === 'admin') {
+            return res.status(400).json({
+                message: 'User is already admin'
+            })
+        }
+
+        if(user.isBlocked) {
+            return res.status(400).json({
+                message: 'Blocked User cannot become an admin.First Unbock the user'
+            })
+        }
+
+        user.role = 'admin'
+
+        await user.save();
+
+        return res.status(200).json({
+            message: 'User promoted to admin Successfully',
+            data: user
+        })
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while promoting to admin'
+        })
+    }
+}
+
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin }
