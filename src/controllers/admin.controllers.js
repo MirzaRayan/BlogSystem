@@ -260,6 +260,29 @@ const getAllPosts = async (req, res) => {
     }
 }
 
+const getSinglePost = async (req, res) => {
+    try {
+        const singlePost =  await Post.findById(req.params.id)
+
+        if(!singlePost) {
+            return res.status(404).json({
+                message: 'Post not Found'
+            })
+        }
 
 
-export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts }
+        return res.status(200).json({
+            message: 'single post fetched Successfully',
+            data: singlePost
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: 'Server Error while getting single Post'
+        })
+    }
+}
+
+
+
+export { getAllUsers, getSingleUser, deleteSingleUser, blockUser, unBlockUser, promoteToAdmin, getAllStats, getAllPosts, getSinglePost }
